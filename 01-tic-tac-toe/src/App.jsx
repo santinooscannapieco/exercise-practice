@@ -1,56 +1,15 @@
 import { useState } from 'react'
 import './App.css'
-
-const TURNS = {
-  X: 'x',
-  O: 'o'
-}
-
-const WINNER_COMBOS = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6]
-]
-
-
-const Square = ({ children, isSelected, updateBoard, index }) => {
-  const turnClassName = `flex items-center justify-center uppercase border w-[70px] h-[70px] text-4xl rounded-sm ${isSelected ? 'is-selected border-none' : ''}`
-
-const handleClick = () => {
-  updateBoard(index)
-}
-
-  return (
-    <div onClick={handleClick} className={turnClassName}>
-      {children}
-    </div>
-  )
-}
+import confetti from 'canvas-confetti'
+import { Square } from './components/Square'
+import { TURNS } from './constants.js'
+import { checkWinnerFrom, checkEndGame } from './logic/board.js'
+import { Winner } from './components/Winner.jsx'
 
 function App() {
-  const [board, setBoard] = useState(Array(9).fill(null))
+  const [board, setBoard] = useState(Array(9).fill(null)) // creo el tablero
   const [turn, setTurn] = useState(TURNS.X)
-  const [winner, setWinner] = useState(null)
-
-  const checkWinner = (boardToCheck) => {
-    for (const combo of WINNER_COMBOS) {
-      const [a, b, c] = combo
-      if (
-        boardToCheck[a] &&
-        boardToCheck[a] === boardToCheck[b] &&
-        boardToCheck[a] === boardToCheck[c]
-      ) {
-        return boardToCheck[a]
-      }
-    }
-    // si no hay ganador
-    return null
-  }
+  const [winner, setWinner] = useState(null)  
 
   const resetGame = () => {
     setBoard(Array(9).fill(null))
@@ -70,11 +29,13 @@ function App() {
     setTurn(newTurn)
 
     // revisar si hay ganador
-    const newWinner = checkWinner(newBoard)
+    const newWinner = checkWinnerFrom(newBoard)
     if (newWinner) {
+      confetti()
       setWinner(newWinner) // guardo ganador
+    } else if (checkEndGame(newBoard)) {
+      setWinner(false) // Empate
     }
-
   }
 
   return (
@@ -110,34 +71,10 @@ function App() {
         </Square>
       </section>
 
-      {
-        winner !== null && (
-          <section className='absolute w-screen h-screen top-0 left-0 grid items-center justify-center'>
-            <div className='flex flex-col justify-center items-center gap-2 w-[250px] h-[250px] bg-zinc-800 border rounded-lg'>
-              <h2>
-                {
-                  winner === false
-                   ? 'Empate'
-                   : 'Ganó:'
-                }
-              </h2>
-
-              <header className=''>
-                {winner && <Square>{winner}</Square>}
-              </header>
-
-              <footer>
-                <button 
-                  className="center border w-[100px] rounded-md"
-                  onClick={resetGame}
-                >
-                  Empezar de nuevo
-                </button>
-              </footer>
-            </div>
-          </section>
-        )
-      }
+      <Winner 
+        winner={winner}
+        resetGame={resetGame}
+      />
     </main>
   )
 }
