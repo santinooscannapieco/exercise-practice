@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 
+// TODO: Armar un juego con está lógica EJ: clicker un punto que te va cambiando de posición como aim practice
+ 
 const FollowMouse = () => {
   const [enabled, setEnabled] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
@@ -10,7 +12,6 @@ const FollowMouse = () => {
     
     const handleMove = (event) => {
       const { clientX, clientY } = event
-      console.log('handleMove', { clientX, clientY })
       setPosition({ x: clientX, y: clientY })
     }
 

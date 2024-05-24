@@ -8,6 +8,7 @@ import { Winner } from './components/Winner.jsx'
 import { resetGameStorage, saveGameToStorage } from './logic/storage/index.js'
 
 // TODO: Guardar la win de cada uno y armar contador
+// TODO: Pasar de tic tac toe a cuatro en raya
  
 function App() {
   const [board, setBoard] = useState(() => {
