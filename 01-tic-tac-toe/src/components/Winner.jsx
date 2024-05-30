@@ -1,4 +1,6 @@
 import { Square } from "./Square"
+import PropTypes from 'prop-types'
+
 
 export const Winner = ({ winner, resetGame }) => {
     return (
@@ -10,8 +12,8 @@ export const Winner = ({ winner, resetGame }) => {
                   <h2>
                     {
                       winner === false
-                       ? 'Empate'
-                       : 'Ganó:'
+                       ? 'EMPATE'
+                       : 'GANADOR: '
                     }
                   </h2>
     
@@ -21,7 +23,7 @@ export const Winner = ({ winner, resetGame }) => {
     
                   <footer>
                     <button 
-                      className="center border w-[100px] rounded-md"
+                      className="center border bg-green-700 w-[150px] text-md rounded-md px-1"
                       onClick={resetGame}
                     >
                       Empezar de nuevo
@@ -33,4 +35,9 @@ export const Winner = ({ winner, resetGame }) => {
           }
         </>
     )
+}
+
+Winner.propTypes = {
+  winner: PropTypes.node,
+  resetGame: PropTypes.func
 }
