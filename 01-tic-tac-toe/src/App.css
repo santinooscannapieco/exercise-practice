@@ -5,6 +5,7 @@ main {
   display: grid;
   place-content: center;
   min-height: 100vh;
+  color: #fff;
 }
 
 .is-selected {

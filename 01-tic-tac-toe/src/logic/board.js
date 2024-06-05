@@ -1,7 +1,7 @@
-import { WINNER_COMBOS } from "../constants"
+import { WINNER_COMBOS_TICTACTOE } from "../constants"
 
 export const checkWinnerFrom = (boardToCheck) => {
-    for (const combo of WINNER_COMBOS) {
+    for (const combo of WINNER_COMBOS_TICTACTOE) {
       const [a, b, c] = combo
       if (
         boardToCheck[a] &&

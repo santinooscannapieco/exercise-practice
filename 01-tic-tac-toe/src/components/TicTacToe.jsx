@@ -1,7 +1,7 @@
 import { useState } from "react";
 import confetti from "canvas-confetti";
 import { Square } from "./Square";
-import { TURNS } from "../constants.js";
+import { TURNS_TICTACTOE } from "../constants.js";
 import { checkWinnerFrom, checkEndGame } from "../logic/board.js";
 import { Winner } from "./Winner.jsx";
 import {
@@ -24,7 +24,7 @@ export const TicTacToe = () => {
 
   const [turn, setTurn] = useState(() => {
     const turnFromStorage = window.localStorage.getItem("turn");
-    return turnFromStorage ? turnFromStorage : TURNS.X;
+    return turnFromStorage ? turnFromStorage : TURNS_TICTACTOE.X;
   });
 
   const [puntos, setPuntos] = useState(() => {
@@ -37,7 +37,7 @@ export const TicTacToe = () => {
   const resetGame = () => {
     sumarPuntos();
     setBoard(Array(9).fill(null));
-    setTurn(TURNS.X);
+    setTurn(TURNS_TICTACTOE.X);
     setWinner(null);
 
     resetGameStorage();
@@ -50,7 +50,8 @@ export const TicTacToe = () => {
     setBoard(newBoard); // Guardo el último turno, actualizo el tablero
 
     // Cambio el turno
-    const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X;
+    const newTurn =
+      turn === TURNS_TICTACTOE.X ? TURNS_TICTACTOE.O : TURNS_TICTACTOE.X;
     setTurn(newTurn);
     // guardar aqui partida
     saveGameToStorage({
@@ -86,7 +87,7 @@ export const TicTacToe = () => {
   };
 
   return (
-    <main className="text-stone-50">
+    <main>
       <div className="flex flex-col items-center">
         <Link to={"/"} className="text-3xl mb-4">
           <FaArrowCircleLeft />
@@ -113,8 +114,12 @@ export const TicTacToe = () => {
           })}
         </section>
         <section className="flex justify-center gap-1 mt-2 relative">
-          <Square isSelected={turn === TURNS.X}>{TURNS.X}</Square>
-          <Square isSelected={turn === TURNS.O}>{TURNS.O}</Square>
+          <Square isSelected={turn === TURNS_TICTACTOE.X}>
+            {TURNS_TICTACTOE.X}
+          </Square>
+          <Square isSelected={turn === TURNS_TICTACTOE.O}>
+            {TURNS_TICTACTOE.O}
+          </Square>
         </section>
 
         <button
