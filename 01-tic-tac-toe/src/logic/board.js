@@ -1,6 +1,6 @@
-import { WINNER_COMBOS_TICTACTOE } from "../constants"
+import { WINNER_COMBOS_CONNECTFOUR, WINNER_COMBOS_TICTACTOE } from "../constants"
 
-export const checkWinnerFrom = (boardToCheck) => {
+export const checkWinnerFromTicTacToe = (boardToCheck) => {
     for (const combo of WINNER_COMBOS_TICTACTOE) {
       const [a, b, c] = combo
       if (
@@ -18,3 +18,21 @@ export const checkWinnerFrom = (boardToCheck) => {
   export const checkEndGame = (newBoard) => {
     return newBoard.every((square) => square !== null)
   }
+
+
+
+
+export const checkWinnerFromConectFour = (boardToCheck) => {
+  for ( const combo of WINNER_COMBOS_CONNECTFOUR) {
+    const [a, b, c, d] = combo
+    if(
+      boardToCheck[a] &&
+      boardToCheck[a] === boardToCheck[b] &&
+      boardToCheck[a] === boardToCheck[c] &&
+      boardToCheck[a] === boardToCheck[d]
+    ) {
+      return boardToCheck[a]
+    }
+  }
+  return null
+}

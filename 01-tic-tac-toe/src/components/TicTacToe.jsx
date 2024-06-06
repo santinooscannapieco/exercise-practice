@@ -2,7 +2,7 @@ import { useState } from "react";
 import confetti from "canvas-confetti";
 import { Square } from "./Square";
 import { TURNS_TICTACTOE } from "../constants.js";
-import { checkWinnerFrom, checkEndGame } from "../logic/board.js";
+import { checkWinnerFromTicTacToe, checkEndGame } from "../logic/board.js";
 import { Winner } from "./Winner.jsx";
 import {
   resetGameStorage,
@@ -60,7 +60,7 @@ export const TicTacToe = () => {
     });
 
     // revisar si hay ganador
-    const newWinner = checkWinnerFrom(newBoard);
+    const newWinner = checkWinnerFromTicTacToe(newBoard);
     if (newWinner) {
       confetti();
       setWinner(newWinner); // guardo ganador
