@@ -13,22 +13,25 @@ import {
 import { Link } from "react-router-dom";
 
 import { FaArrowCircleLeft } from "react-icons/fa";
+import { ButtonFinishGame } from "./ButtonFinishGame.jsx";
+
+const game = "TicTacToe";
 
 export const TicTacToe = () => {
   const [board, setBoard] = useState(() => {
-    const boardFromStorage = window.localStorage.getItem("board");
+    const boardFromStorage = window.localStorage.getItem(`board ${game}`);
     return boardFromStorage
       ? JSON.parse(boardFromStorage)
       : Array(9).fill(null);
   }); // check localStorage y creo el tablero
 
   const [turn, setTurn] = useState(() => {
-    const turnFromStorage = window.localStorage.getItem("turn");
+    const turnFromStorage = window.localStorage.getItem(`turn ${game}`);
     return turnFromStorage ? turnFromStorage : TURNS_TICTACTOE.X;
   });
 
   const [puntos, setPuntos] = useState(() => {
-    const puntosFromStorage = window.localStorage.getItem("puntos");
+    const puntosFromStorage = window.localStorage.getItem(`puntos ${game}`);
     return puntosFromStorage ? JSON.parse(puntosFromStorage) : Array(2).fill(0);
   });
 
@@ -36,11 +39,10 @@ export const TicTacToe = () => {
 
   const resetGame = () => {
     sumarPuntos();
+    winner === false && resetGameStorage({ game: game });
     setBoard(Array(9).fill(null));
     setTurn(TURNS_TICTACTOE.X);
     setWinner(null);
-
-    resetGameStorage();
   };
 
   const updateBoard = (index) => {
@@ -57,13 +59,16 @@ export const TicTacToe = () => {
     saveGameToStorage({
       board: newBoard,
       turn: newTurn,
+      game: game,
     });
 
     // revisar si hay ganador
     const newWinner = checkWinnerFromTicTacToe(newBoard);
+
     if (newWinner) {
       confetti();
       setWinner(newWinner); // guardo ganador
+      resetGameStorage({ game: game });
     } else if (checkEndGame(newBoard)) {
       setWinner(false); // Empate
     }
@@ -77,13 +82,14 @@ export const TicTacToe = () => {
 
     saveWinToStorage({
       puntos: newPuntos,
+      game: game,
     });
   };
 
   const handleFinish = () => {
     setPuntos(Array(2).fill(0));
     setBoard(Array(9).fill(null));
-    resetMatchStorage();
+    resetMatchStorage({ game: game });
   };
 
   return (
@@ -122,12 +128,7 @@ export const TicTacToe = () => {
           </Square>
         </section>
 
-        <button
-          className="center border bg-red-700 w-[150px] text-md rounded-md mt-5"
-          onClick={handleFinish}
-        >
-          TERMINAR PARTIDA
-        </button>
+        <ButtonFinishGame handleFinish={handleFinish} />
         <Winner winner={winner} resetGame={resetGame} />
       </div>
     </main>

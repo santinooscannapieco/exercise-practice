@@ -1,20 +1,20 @@
-export const saveGameToStorage = ({board, turn}) => {
+export const saveGameToStorage = ({board, turn, game}) => {
     // guardar aqui partida
-    window.localStorage.setItem('board', JSON.stringify(board))
-    window.localStorage.setItem('turn', turn)
+    window.localStorage.setItem(`board ${game}`, JSON.stringify(board))
+    window.localStorage.setItem(`turn ${game}`, turn)
 }
 
-export const saveWinToStorage = ({puntos}) => {
-    window.localStorage.setItem('puntos', JSON.stringify(puntos))
+export const saveWinToStorage = ({puntos, game}) => {
+    window.localStorage.setItem(`puntos ${game}`, JSON.stringify(puntos))
 }
 
-export const resetGameStorage = () => {
-    window.localStorage.removeItem('board')
-    window.localStorage.removeItem('turn')
+export const resetGameStorage = ({game}) => {
+    window.localStorage.removeItem(`board ${game}`)
+    window.localStorage.removeItem(`turn ${game}`)
 }
 
-export const resetMatchStorage = () => {
-    window.localStorage.removeItem('board')
-    window.localStorage.removeItem('turn')
-    window.localStorage.removeItem('puntos')
+export const resetMatchStorage = ({game}) => {
+    window.localStorage.removeItem(`board ${game}`)
+    window.localStorage.removeItem(`turn ${game}`)
+    window.localStorage.removeItem(`puntos ${game}`)
 }

@@ -3,25 +3,51 @@ import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { Circle } from "./Circle";
 import { TURNS_CONECTFOUR } from "../constants";
-import { checkWinnerFromConectFour } from "../logic/board";
+import { checkEndGame, checkWinnerFromConectFour } from "../logic/board";
 import { Winner } from "./Winner";
+import {
+  resetGameStorage,
+  resetMatchStorage,
+  saveGameToStorage,
+  saveWinToStorage,
+} from "../logic/storage";
+import confetti from "canvas-confetti";
+import { ButtonFinishGame } from "./ButtonFinishGame";
 
 // TODO : Agregar la funcionalidad de LocalStorage
+
+const game = "Conect Four";
 
 const rows = 6;
 const cols = 7;
 
 export const ConectFour = () => {
-  const [board, setBoard] = useState(Array(rows * cols).fill(null));
-  const [turn, setTurn] = useState(TURNS_CONECTFOUR.red);
+  const [board, setBoard] = useState(() => {
+    const boardFromStorage = window.localStorage.getItem(`board ${game}`);
+    return boardFromStorage
+      ? JSON.parse(boardFromStorage)
+      : Array(rows * cols).fill(null);
+  });
+
+  const [turn, setTurn] = useState(() => {
+    const turnFromStorage = window.localStorage.getItem(`turn ${game}`);
+    return turnFromStorage ? turnFromStorage : TURNS_CONECTFOUR.red;
+  });
+
+  const [puntos, setPuntos] = useState(() => {
+    const puntosFromStorage = window.localStorage.getItem(`puntos ${game}`);
+    return puntosFromStorage ? JSON.parse(puntosFromStorage) : Array(2).fill(0);
+  });
+
   const [winner, setWinner] = useState(null);
-  const [puntos, setPuntos] = useState([0, 0]);
 
   const resetGame = () => {
     sumarPuntos();
     setBoard(Array(rows * cols).fill(null));
     setTurn(TURNS_CONECTFOUR.red);
     setWinner(null);
+
+    winner === false && resetGameStorage({ game: game });
   };
 
   const updateBoard = (index) => {
@@ -35,14 +61,21 @@ export const ConectFour = () => {
         newBoard[row * cols + col] = turn;
         setBoard(newBoard);
 
-        const newWinner = checkWinnerFromConectFour(newBoard);
-        setWinner(newWinner);
-
         const newTurn =
           turn === TURNS_CONECTFOUR.red
             ? TURNS_CONECTFOUR.green
             : TURNS_CONECTFOUR.red;
         setTurn(newTurn);
+        saveGameToStorage({ board: newBoard, turn: newTurn, game: game });
+
+        const newWinner = checkWinnerFromConectFour(newBoard);
+        if (newWinner) {
+          resetGameStorage({ game: game });
+          confetti();
+          setWinner(newWinner);
+        } else if (checkEndGame(newBoard)) {
+          setWinner(false);
+        }
         break;
       }
     }
@@ -53,6 +86,18 @@ export const ConectFour = () => {
     winner === "1" && (newPuntos[0] = newPuntos[0] + 1);
     winner === "2" && (newPuntos[1] = newPuntos[1] + 1);
     setPuntos(newPuntos);
+
+    saveWinToStorage({
+      puntos: newPuntos,
+      game: game,
+    });
+  };
+
+  const handleFinish = () => {
+    setPuntos(Array(2).fill(0));
+    setBoard(Array(rows * cols).fill(null));
+    setTurn(TURNS_CONECTFOUR.red);
+    resetMatchStorage({ game: game });
   };
 
   return (
@@ -102,6 +147,7 @@ export const ConectFour = () => {
             );
           })}
         </section>
+        <ButtonFinishGame handleFinish={handleFinish} />
         <Winner winner={winner} resetGame={resetGame} />
       </div>
     </main>
