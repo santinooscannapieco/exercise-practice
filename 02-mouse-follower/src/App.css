@@ -7,3 +7,20 @@ body {
   min-height: 100vh;
   color: #fff;
 }
+
+#wall {
+  position: absolute;
+  background-color: #4ade80;
+}
+
+#start {
+  position: absolute;
+  top: 680px;
+  left: 410px;
+}
+
+#exit {
+  position: absolute;
+  top: 410px;
+  left: -10px;
+}

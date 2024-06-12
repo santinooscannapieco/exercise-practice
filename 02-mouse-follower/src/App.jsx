@@ -1,70 +1,18 @@
-import { useEffect, useState } from 'react'
-import './App.css'
+import "./App.css";
+import { FollowMouse } from "./components/FollowMouse";
+import { Board } from "./components/Board";
 
-// TODO: Armar un juego con está lógica EJ: clicker un punto que te va cambiando de posición como aim practice
- 
-const FollowMouse = () => {
-  const [enabled, setEnabled] = useState(false)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
+// TODO:
+// 2. Juego de Laberinto
+//    Un juego donde el usuario debe mover el puntero a través de un laberinto sin tocar las paredes
 
-  useEffect(() => {
-    console.log('effect ', { enabled })
-    
-    const handleMove = (event) => {
-      const { clientX, clientY } = event
-      setPosition({ x: clientX, y: clientY })
-    }
-
-    if (enabled) {
-      window.addEventListener('pointermove', handleMove)
-    }
-
-    // cleanup
-    // => se ejecuta cuando el componente se desmonta
-    // => se ejecuta cuando cambian las dependencias, antes de ejecutar el efecto nuevo
-    return () => {
-      window.removeEventListener('pointermove', handleMove)
-    }
-  }, [enabled])
-
-  const classNameCursor = enabled ? 'block' : 'hidden'
-
-  return (
-    <>
-      <div 
-        className={classNameCursor} 
-        style={{
-          position: 'absolute',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          border: '1px solid #fff',
-          borderRadius: '50%',
-          opacity: 0.8,
-          pointerEvents: 'none',
-          left: -25,
-          top: -25,
-          width: 50,
-          height: 50,
-          transform: `translate(${position.x}px, ${position.y}px)`
-        }}
-      />
-
-      <h3>Mouse Follower</h3>
-      <button 
-        onClick={() => setEnabled(!enabled)}
-        className='border px-3 py-1 rounded-md bg-black'
-      >
-        {enabled ? 'Desactivar' : 'Activar'} seguir puntero
-      </button>
-    </>
-  )
-}
-
-function App () {
+function App() {
   return (
     <main>
-      <FollowMouse/>
+      <Board />
+      <FollowMouse />
     </main>
-  )
+  );
 }
 
-export default App
+export default App;
