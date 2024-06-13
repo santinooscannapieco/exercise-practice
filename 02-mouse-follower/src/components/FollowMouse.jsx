@@ -1,15 +1,26 @@
 import { useEffect, useState } from "react";
+import { GAME_OVER_COMBOS } from "../constant";
+
+// TODO: Arreglar la lógica de la colisión con las paredes
 
 export const FollowMouse = () => {
   const [enabled, setEnabled] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  });
 
   useEffect(() => {
-    console.log("effect ", { enabled });
-
     const handleMove = (event) => {
       const { clientX, clientY } = event;
-      setPosition({ x: clientX, y: clientY });
+      setPosition({
+        top: clientX - 25,
+        right: clientY + 25,
+        bottom: clientX + 25,
+        left: clientY - 25,
+      });
     };
 
     if (enabled) {
@@ -24,6 +35,32 @@ export const FollowMouse = () => {
     };
   }, [enabled]);
 
+  /* console.log(position); */
+
+  useEffect(() => {
+    const checkCollicion = () => {
+      const walls = document.querySelectorAll(".wall");
+      for (const wall of walls) {
+        const rect = wall.getBoundingClientRect();
+
+        if (GAME_OVER_COMBOS({ position, rect })) {
+          resetGame();
+          console.log("perdiste");
+          return;
+        }
+      }
+    };
+
+    checkCollicion();
+  }, [position]);
+
+  const resetGame = () => {
+    alert("perdiste");
+    /* const start = document.getElementById("start");
+    const entrada = start.getBoundingClientRect();
+    setPosition(entrada.top); */
+  };
+
   const classNameCursor = enabled ? "block" : "block";
 
   return (
@@ -34,14 +71,16 @@ export const FollowMouse = () => {
           position: "absolute",
           backgroundColor: "rgba(0, 0, 0, 0.5)",
           border: "1px solid #fff",
-          borderRadius: "50%",
+
           opacity: 0.8,
           pointerEvents: "none",
           left: -25,
           top: -25,
           width: 50,
           height: 50,
-          transform: `translate(${position.x}px, ${position.y}px)`,
+          transform: `translate(${position.top + 25}px, ${
+            position.right - 25
+          }px)`,
         }}
       />
 
