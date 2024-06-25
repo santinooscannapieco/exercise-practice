@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { GAME_OVER_COMBOS } from "../constant";
+/* import { GAME_OVER_COMBOS } from "../constant"; */
 
 // TODO: Arreglar la lógica de la colisión con las paredes
+// Check collision esta solo armado para combo 5 y 6 hay q corregir
 
 export const FollowMouse = () => {
   const [enabled, setEnabled] = useState(false);
@@ -16,10 +17,10 @@ export const FollowMouse = () => {
     const handleMove = (event) => {
       const { clientX, clientY } = event;
       setPosition({
-        top: clientX - 25,
-        right: clientY + 25,
-        bottom: clientX + 25,
-        left: clientY - 25,
+        top: clientY - 25,
+        right: clientX + 25,
+        bottom: clientY + 25,
+        left: clientX - 25,
       });
     };
 
@@ -39,27 +40,49 @@ export const FollowMouse = () => {
 
   useEffect(() => {
     const checkCollicion = () => {
-      const walls = document.querySelectorAll(".wall");
-      for (const wall of walls) {
-        const rect = wall.getBoundingClientRect();
+      const wall = document.querySelector("#start");
+      const rect = wall.getBoundingClientRect();
 
-        if (GAME_OVER_COMBOS({ position, rect })) {
-          resetGame();
-          console.log("perdiste");
-          return;
-        }
+      console.log(rect);
+
+      if (
+        position.top >= rect.top &&
+        position.right <= rect.right &&
+        position.top <= rect.bottom &&
+        position.right >= rect.left
+      ) {
+        console.log("perdiste");
+        return;
       }
     };
 
     checkCollicion();
   }, [position]);
 
-  const resetGame = () => {
+  /* useEffect(() => {
+    const checkCollicion = () => {
+      const walls = document.querySelectorAll(".wall");
+      for (const wall of walls) {
+        const rect = wall.getBoundingClientRect();
+          console.log(rect);
+
+        if (GAME_OVER_COMBOS({ position, rect })) {
+          resetGame();
+            console.log("perdiste");
+          return;
+        }
+      }
+    };
+
+    checkCollicion();
+  }, [position]); */
+
+  /* const resetGame = () => {
     alert("perdiste");
-    /* const start = document.getElementById("start");
-    const entrada = start.getBoundingClientRect();
-    setPosition(entrada.top); */
-  };
+          const start = document.getElementById("start");
+          const entrada = start.getBoundingClientRect();
+          setPosition(entrada.top);
+  }; */
 
   const classNameCursor = enabled ? "block" : "block";
 
@@ -78,8 +101,8 @@ export const FollowMouse = () => {
           top: -25,
           width: 50,
           height: 50,
-          transform: `translate(${position.top + 25}px, ${
-            position.right - 25
+          transform: `translate(${position.left + 25}px, ${
+            position.bottom - 25
           }px)`,
         }}
       />
@@ -93,3 +116,17 @@ export const FollowMouse = () => {
     </>
   );
 };
+
+/* 
+1 y 6
+  position.bottom >= rect.top &&
+  position.right <= rect.right &&
+  position.bottom <= rect.bottom &&
+  position.right >= rect.left 
+
+5 y 6
+  position.top >= rect.top &&
+  position.right <= rect.right &&
+  position.top <= rect.bottom &&
+  position.right >= rect.left
+*/

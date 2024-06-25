@@ -20,14 +20,15 @@ body {
 
 #start {
   position: absolute;
+  writing-mode: vertical-rl;
   top: 410px;
-  left: -30px;
-  background-color: #27272a;
+  left: -50px;
+  background-color: #1b6b41;
 }
 
 #exit {
   position: absolute;
   top: 680px;
   left: 410px;
-  background-color: #27272a;
+  background-color: #ff0303;
 }
