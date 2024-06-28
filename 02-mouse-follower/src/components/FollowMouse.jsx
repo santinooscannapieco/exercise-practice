@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-/* import { GAME_OVER_COMBOS } from "../constant"; */
+import { COLLITION_COMBOS } from "../constant";
+import { Winner } from "./Winner";
 
-// TODO: Arreglar la lógica de la colisión con las paredes
-// Check collision esta solo armado para combo 5 y 6 hay q corregir
+// TODO: Agragar collisión con paredes de afuera
+// Corregir reinicio de juego (Winner.jsx)
 
 export const FollowMouse = () => {
   const [enabled, setEnabled] = useState(false);
@@ -12,6 +13,7 @@ export const FollowMouse = () => {
     bottom: 0,
     left: 0,
   });
+  const [winner, setWinner] = useState(null);
 
   useEffect(() => {
     const handleMove = (event) => {
@@ -36,53 +38,36 @@ export const FollowMouse = () => {
     };
   }, [enabled]);
 
-  /* console.log(position); */
-
   useEffect(() => {
-    const checkCollicion = () => {
-      const wall = document.querySelector("#start");
-      const rect = wall.getBoundingClientRect();
-
-      console.log(rect);
-
-      if (
-        position.top >= rect.top &&
-        position.right <= rect.right &&
-        position.top <= rect.bottom &&
-        position.right >= rect.left
-      ) {
-        console.log("perdiste");
-        return;
-      }
-    };
-
-    checkCollicion();
-  }, [position]);
-
-  /* useEffect(() => {
     const checkCollicion = () => {
       const walls = document.querySelectorAll(".wall");
       for (const wall of walls) {
         const rect = wall.getBoundingClientRect();
-          console.log(rect);
 
-        if (GAME_OVER_COMBOS({ position, rect })) {
-          resetGame();
-            console.log("perdiste");
+        if (COLLITION_COMBOS({ position, rect })) {
+          setWinner(false);
           return;
         }
       }
+
+      const exit = document.querySelector("#exit");
+      const rect = exit.getBoundingClientRect();
+
+      if (COLLITION_COMBOS({ position, rect })) {
+        setWinner(true);
+      }
     };
 
-    checkCollicion();
-  }, [position]); */
+    if (enabled) {
+      checkCollicion();
+    }
+  }, [position, enabled]);
 
-  /* const resetGame = () => {
-    alert("perdiste");
-          const start = document.getElementById("start");
-          const entrada = start.getBoundingClientRect();
-          setPosition(entrada.top);
-  }; */
+  const resetGame = () => {
+    setEnabled(false);
+    setWinner(null);
+    setPosition({ top: 0, right: 0, bottom: 0, left: 0 });
+  };
 
   const classNameCursor = enabled ? "block" : "block";
 
@@ -107,26 +92,16 @@ export const FollowMouse = () => {
         }}
       />
 
-      <button
-        onClick={() => setEnabled(!enabled)}
-        className="border px-3 py-1 rounded-md bg-black"
-      >
-        {enabled ? "Desactivar" : "Activar"} seguir puntero
-      </button>
+      <div className="flex justify-center mt-10">
+        <button
+          onClick={() => setEnabled(!enabled)}
+          className="border px-3 py-1 rounded-md bg-black"
+        >
+          {enabled ? "Pausa" : "Jugar"}
+        </button>
+      </div>
+
+      <Winner winner={winner} resetGame={resetGame} />
     </>
   );
 };
-
-/* 
-1 y 6
-  position.bottom >= rect.top &&
-  position.right <= rect.right &&
-  position.bottom <= rect.bottom &&
-  position.right >= rect.left 
-
-5 y 6
-  position.top >= rect.top &&
-  position.right <= rect.right &&
-  position.top <= rect.bottom &&
-  position.right >= rect.left
-*/
